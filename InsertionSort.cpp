@@ -1,7 +1,11 @@
 #include<iostream>
 #include<vector>
 using namespace std;
-//对向量进行插入排序
+
+/**
+ * @brief 对向量v进行插入排序
+ * @param v     待排序的向量
+ */
 void InsertionSort(vector<int> &v)
 {
 	int i, j, key;
