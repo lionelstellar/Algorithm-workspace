@@ -6,7 +6,8 @@ using namespace std;
  * @brief 对向量v进行插入排序
  * @param v     待排序的向量
  */
-void InsertionSort(vector<int> &v)
+template <class T>
+void InsertionSort(vector<T> &v)
 {
 	int i, j, key;
 
