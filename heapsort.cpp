@@ -54,7 +54,7 @@ void Heapsort(vector<int> &v)
     vector<int> ret;
     
     Build_Max_Heap(v);
-    //display(v);
+    
     for(int i = v.size()-1; i > 1; i--)
     {
         swap(v[i], v[1]);
@@ -74,19 +74,19 @@ void Heapsort(vector<int> &v)
 
 int main()
 {
-    int arr[] = {5,2,4,7,10,9,8,1,6,3};
-	//int arr[] = {4,1,3,2,16,9,10,14,8,7};
-    vector<int> v(arr, arr + sizeof(arr)/sizeof(int));
-
-	//模拟堆的数组，第一个元素0是为了占一个位置，不属于堆
-	v.insert(v.begin(),0);
     
+    //arr为要排序的数组
+	int arr[] = {5,2,4,7,10,9,8,1,6,3};
 
-    //Build_Max_Heap(v);
-    //流迭代器打印vector
-    Heapsort(v);
-    display(v);
-    
+	//把数组放入向量中
+	vector<int> v(arr, arr + sizeof(arr)/sizeof(int));
+	
+	//对向量使用堆排序
+	Heapsort(v);
+
+	//按顺序打印排序后向量中的所有元素
+	copy (v.begin(), v.end(), ostream_iterator<int> (cout, " "));
+    cout << endl;
     
     
     

@@ -23,8 +23,14 @@ void QuickSort(int* arr, int start, int end)
                 swap(arr[i],arr[little_end]);
             }
         }
-
-        swap(arr[start], arr[little_end]);
+		//unstable way
+        //swap(arr[start], arr[little_end]);
+		
+		//stable way
+		for(int i = start; i < little_end; i++){
+			arr[i] = arr[i + 1];
+		}
+		arr[little_end] = pivot;
 
 		//分区完成后对子问题快排
         QuickSort(arr, start, little_end - 1);
