@@ -27,7 +27,7 @@ class BSTree{
 
 template <class T>
 BSTNode<T> *BSTree<T>::insert(T value){
-    BSTNode<T> *x = root
+    BSTNode<T> *x = root;
 
 }
 
