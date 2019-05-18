@@ -1,43 +1,25 @@
 #include<iostream>
+#include"BSTree.h"
 using namespace std;
 
-template <class T>
-class BSTNode{
-    public:
-        int key;
-        BSTNode *parent;
-        BSTNode *left;
-        BSTNode *right;
-    BSTNode(T value, BSTNode *p, BSTNode *l, BSTNode *r):
-            key(value),parent(p),left(l),right(r) {}
-        
-};
-
-template <class T>
-class BSTree{
-    public:
-        
-        BSTNode<T> *root;
-
-        T maximum();
-        T minimum();
-        BSTNode<T> *insert(T value);
-        void inorder();
-};
-
-template <class T>
-BSTNode<T> *BSTree<T>::insert(T value){
-    BSTNode<T> *x = root;
-
-}
 
 
 int main(){
-    BSTNode<int> b2(2,nullptr, nullptr, nullptr);
-    BSTNode<int> b3(3,nullptr, nullptr, nullptr);
-    BSTNode<int> b1(1,&b3, &b2, nullptr);
+    BSTNode<int> b2(2,NULL, NULL, NULL);
+    BSTNode<int> b3(3,NULL, NULL, NULL);
+    BSTNode<int> b1(1,&b3, &b2, NULL);
     
-    cout << b1.parent->key << endl;
-    BSTNode<int> *b = &b1;
-    cout << b->left->key << endl;
+    //arr为要排序的数组
+	int arr[] = {5,2,4,7,10,9,8,1,6,3};
+    //建树
+    BSTree<int>* tree=new BSTree<int>();
+    
+    
+    for(int i = 0; i < sizeof(arr)/sizeof(int); i++){
+        
+        tree->insert(arr[i]);
+    }
+    tree->preOrder();
+    
+
 }
