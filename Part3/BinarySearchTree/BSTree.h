@@ -37,12 +37,16 @@ class BSTree{
 
         T maximum();
         T minimum();
-        BSTNode<T> *insert(T value);
-        void preOrder();
+        BSTNode<T> *insert(T value);    //插入值到树中
+        void preOrder();    //先序遍历
+        void inOrder();     //中序遍历
+        void postOrder();   //后序遍历
     
     private:
-        void insert(BSTNode<T>* &node, BSTNode<T> *z) const;
-        void preOrder(BSTNode<T> *tree) const;
+        void insert(BSTNode<T>* &node, BSTNode<T> *z) const;    //插入节点到树中
+        void preOrder(BSTNode<T> *tree) const;  //先序遍历
+        void inOrder(BSTNode<T> *tree) const;   //中序遍历
+        void postOrder(BSTNode<T> *tree) const; //后序遍历
 };
 
 
@@ -64,10 +68,23 @@ void BSTree<T>::insert(BSTNode<T>* &tree, BSTNode<T>* z) const
     while (x != NULL)
     {
         y = x;
+        
         if (z->key < x->key)
             x = x->left;
         else
             x = x->right;
+        //如果要设置不允许插入相同的值,整个循环体可改为下段注释中的代码
+        /*
+        y = x;
+        if(z->key < x->key)
+            x = x->left;
+        else if(z->key > x->key)
+            x = x->right;
+        else
+        {
+            throw MyException();
+        }
+        */
     }
 
     z->parent = y;
@@ -97,7 +114,7 @@ BSTNode<T>* BSTree<T>::insert(T key)
     return z;
 }
 /**
- * @brief 前序遍历
+ * @brief 先序遍历
  */
 template <class T>
 void BSTree<T>::preOrder(BSTNode<T> *tree) const{
@@ -110,7 +127,47 @@ void BSTree<T>::preOrder(BSTNode<T> *tree) const{
 
 template <class T>
 void BSTree<T>::preOrder(){
+    cout << "先序遍历：";
     preOrder(root);
+    cout << endl;
+}
+
+/**
+ * @brief 中序遍历
+ */
+template <class T>
+void BSTree<T>::inOrder(BSTNode<T> *tree) const{
+    if(tree != NULL){
+        inOrder(tree->left);
+        cout << tree->key << " ";
+        inOrder(tree->right);
+    }
+}
+
+template <class T>
+void BSTree<T>::inOrder(){
+    cout << "中序遍历：";
+    inOrder(root);
+    cout << endl;
+}
+
+/**
+ * @brief 后序遍历
+ */
+template <class T>
+void BSTree<T>::postOrder(BSTNode<T> *tree) const{
+    if(tree != NULL){
+        postOrder(tree->left);
+        postOrder(tree->right);
+        cout << tree->key << " ";
+    }
+}
+
+template <class T>
+void BSTree<T>::postOrder(){
+    cout << "后序遍历：";
+    postOrder(root);
+    cout << endl;
 }
 
 
