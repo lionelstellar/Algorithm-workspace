@@ -127,10 +127,15 @@ void BSTree<T>::insert(BSTNode<T>* &tree, BSTNode<T>* z) const
     while (x != NULL)
     {
         y = x;
-        if (z->key < x->key)
+        if(z->key < x->key)
             x = x->left;
-        else
+        else if(z->key > x->key)
             x = x->right;
+        else
+        {
+            throw MyException();
+        }
+        
     }
 
     z->parent = y;
@@ -173,7 +178,8 @@ int main(){
     BSTNode<int> b1(1,&b3, &b2, NULL);
     
     //arr为要排序的数组
-    int arr[] = {5,2,4,7,10,9,8,1,6,3};
+    //int arr[] = {5,2,4,7,10,9,8,1,6,3};
+    int arr[] = {1,1};
     //建树
     BSTree<int>* tree=new BSTree<int>();
     //tree->insert(1);
