@@ -36,21 +36,34 @@ class BSTree{
 
         T maximum();
         T minimum();
-        BSTNode<T> *insert(T key);
+        BSTNode<T> *insert(T value);
         void preOrder();
     
     private:
-        void insert(BSTNode<T>* &tree, BSTNode<T> *z) const;
+        void insert(BSTNode<T>* &node, BSTNode<T> *z) const;
         void preOrder(BSTNode<T> *tree) const;
 };
 
-
-
-
-
+template <class T>
+void BSTree<T>::preOrder(BSTNode<T> *tree) const{
+    if(tree != NULL){
+        cout << tree->key << " ";
+        preOrder(tree->left);
+        preOrder(tree->right);
+    }
+}
 
 template <class T>
-void BSTree<T>::insert(BSTNode<T>* &tree, BSTNode<T> *z) const{
+void BSTree<T>::preOrder(){
+    preOrder(root);
+}
+
+
+
+
+/*
+template <class T>
+BSTNode<T> *BSTree<T>::insert(BSTNode<T> *tree, BSTNode<T> *z) const{
     
     BSTNode<T> *x = tree;
     BSTNode<T> *y;
@@ -66,24 +79,77 @@ void BSTree<T>::insert(BSTNode<T>* &tree, BSTNode<T> *z) const{
             else{
                 x = x->right;
             }
-        }        
+        }
+        z->parent = y;
     }
-    z->parent = y;
     //
     if(y == NULL){
-        tree = z;
+        root->key = z->key;
+        return root;
     }
     
-    else if(z->key < y->key){
+    if(z->key < y->key){
         y->left = z;
     }
     else{
         y->right = z;
     }
-    
+    return z;
 
 }
 
+template <class T>
+BSTNode<T> *BSTree<T>::insert(T key)
+{
+    BSTNode<T> *z=NULL;
+
+    // 如果新建结点失败，则返回。
+    if ((z=new BSTNode<T>(key,NULL,NULL,NULL)) == NULL)
+        return NULL;
+
+    return insert(root, z);
+}
+*/
+/* 
+ * 将结点插入到二叉树中
+ *
+ * 参数说明：
+ *     tree 二叉树的根结点
+ *     z 插入的结点
+ */
+template <class T>
+void BSTree<T>::insert(BSTNode<T>* &tree, BSTNode<T>* z) const
+{
+    BSTNode<T> *y = NULL;
+    BSTNode<T> *x = tree;
+
+    // 查找z的插入位置
+    while (x != NULL)
+    {
+        y = x;
+        if (z->key < x->key)
+            x = x->left;
+        else
+            x = x->right;
+    }
+
+    z->parent = y;
+    if (y==NULL)
+        tree = z;
+    else if (z->key < y->key)
+        y->left = z;
+    else
+        y->right = z;
+    
+}
+
+/* 
+ * 将结点(key为节点键值)插入到二叉树中
+ *
+ * 参数说明：
+ *     tree 二叉树的根结点
+ *     key 插入结点的键值
+ */
 template <class T>
 BSTNode<T>* BSTree<T>::insert(T key)
 {
@@ -100,16 +166,24 @@ BSTNode<T>* BSTree<T>::insert(T key)
 
 
 
-template <class T>
-void BSTree<T>::preOrder(BSTNode<T> *tree) const{
-    if(tree != NULL){
-        cout << tree->key << " ";
-        preOrder(tree->left);
-        preOrder(tree->right);
-    }
-}
 
-template <class T>
-void BSTree<T>::preOrder(){
-    preOrder(root);
+int main(){
+    BSTNode<int> b2(2,NULL, NULL, NULL);
+    BSTNode<int> b3(3,NULL, NULL, NULL);
+    BSTNode<int> b1(1,&b3, &b2, NULL);
+    
+    //arr为要排序的数组
+    int arr[] = {5,2,4,7,10,9,8,1,6,3};
+    //建树
+    BSTree<int>* tree=new BSTree<int>();
+    //tree->insert(1);
+    //tree->preOrder();
+    
+    for(int i = 0; i < sizeof(arr)/sizeof(int); i++){
+        //cout << arr[i] << " ";
+        tree->insert(arr[i]);
+    }
+    tree->preOrder();
+    
+
 }
