@@ -14,6 +14,8 @@ class BSTNode{
             key(value),parent(p),left(l),right(r) {}
         
 };
+
+
 //定义一个异常，当插入值已存在于树中时可以抛出 throw MyException()
 class MyException:public exception
 {
@@ -32,37 +34,52 @@ class MyException:public exception
 template <class T>
 class BSTree{
     public:
+        BSTree();
+        ~BSTree();
         
         BSTNode<T> *root;
 
         T maximum();
         T minimum();
         BSTNode<T> *insert(T value);    //插入值到树中
+        BSTNode<T> *search(T value);    //查找值
         void preOrder();    //先序遍历
         void inOrder();     //中序遍历
         void postOrder();   //后序遍历
     
     private:
-        void insert(BSTNode<T>* &node, BSTNode<T> *z) const;    //插入节点到树中
+        void insert(BSTNode<T>* &root, BSTNode<T>* z) const;     //插入节点到树中
+        BSTNode<T> *search(BSTNode<T>* &root, T value) const;    //查找值为value的节点
         void preOrder(BSTNode<T> *tree) const;  //先序遍历
         void inOrder(BSTNode<T> *tree) const;   //中序遍历
         void postOrder(BSTNode<T> *tree) const; //后序遍历
 };
 
+// 构造函数
+template <class T>
+BSTree<T>::BSTree(){
+    root = NULL;
+}
 
-
+// 析构函数
+template <class T>
+BSTree<T>::~BSTree(){
+    if(root == NULL)
+        return;
+    FreeMemory(root);
+}
 
 
 /**
  * @brief 将结点插入到二叉树中
- * @param tree  二叉树的根结点
+ * @param node  二叉树的根结点
  *        z     插入的结点
  */
 template <class T>
-void BSTree<T>::insert(BSTNode<T>* &tree, BSTNode<T>* z) const
+void BSTree<T>::insert(BSTNode<T>* &root, BSTNode<T>* z) const
 {
     BSTNode<T> *y = NULL;
-    BSTNode<T> *x = tree;
+    BSTNode<T> *x = root;
 
     // 查找z的插入位置
     while (x != NULL)
@@ -89,7 +106,7 @@ void BSTree<T>::insert(BSTNode<T>* &tree, BSTNode<T>* z) const
 
     z->parent = y;
     if (y==NULL)
-        tree = z;
+        root = z;
     else if (z->key < y->key)
         y->left = z;
     else
@@ -113,6 +130,43 @@ BSTNode<T>* BSTree<T>::insert(T key)
     insert(root, z);
     return z;
 }
+/**
+ * @brief 查找值对应的结点
+ * @param node  二叉树的根节点
+ *        z     key为要查找的值的节点
+ */
+template <class T>
+BSTNode<T>* BSTree<T>::search(BSTNode<T>* &root, T value) const
+{
+    BSTNode<T> *z = new BSTNode<T>(value, NULL, NULL, NULL);
+    BSTNode<T> *node = root;
+    while(node != NULL){
+        if(node->key == value){
+            z = node;
+            return z;
+        }
+        else if(node->key < value)
+            node = node->right;
+        else
+            node = node->left;    
+    }  
+    
+    return NULL;
+}
+
+/**
+ * @brief 查找值对应的结点
+ * @param value   要查找的值
+ */
+template <class T>
+BSTNode<T>* BSTree<T>::search(T value){
+    
+    return search(root, value);
+    
+}
+
+
+
 /**
  * @brief 先序遍历
  */

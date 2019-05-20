@@ -179,7 +179,7 @@ int main(){
     
     //arr为要排序的数组
     //int arr[] = {5,2,4,7,10,9,8,1,6,3};
-    int arr[] = {1,1};
+    int arr[] = {1,2};
     //建树
     BSTree<int>* tree=new BSTree<int>();
     //tree->insert(1);

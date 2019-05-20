@@ -14,6 +14,8 @@ int main(){
         //cout << arr[i] << " ";
         tree->insert(arr[i]);
     }
+
+    
     
     //先序遍历
     tree->preOrder();
@@ -21,6 +23,16 @@ int main(){
     tree->inOrder();
     //后序遍历
     tree->postOrder();
+    
+    //查找
+    int value = 50;
+    BSTNode<int> *node = tree->search(value);
+    if(node != NULL)
+        cout << node->left->key << " " << node->right->key << endl;
+    else
+    {
+        cout << value << " is not in the tree" << endl;
+    }
     
 
 }
