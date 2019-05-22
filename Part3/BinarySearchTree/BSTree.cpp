@@ -33,6 +33,11 @@ int main(){
     {
         cout << value << " is not in the tree" << endl;
     }
-    
+
+    //最大最小值
+    int max = tree->maximum();
+    cout <<"max: " << max << endl;
+    int min = tree->minimum();
+    cout <<"min: " << min << endl;
 
 }

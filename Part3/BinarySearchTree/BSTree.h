@@ -39,8 +39,8 @@ class BSTree{
         
         BSTNode<T> *root;
 
-        T maximum();
-        T minimum();
+        T maximum();    //最大值
+        T minimum();    //最小值
         BSTNode<T> *insert(T value);    //插入值到树中
         BSTNode<T> *search(T value);    //查找值
         void preOrder();    //先序遍历
@@ -48,6 +48,8 @@ class BSTree{
         void postOrder();   //后序遍历
     
     private:
+        BSTNode<T> *maximum(BSTNode<T> *tree) const;      //最大值节点
+        BSTNode<T> *minimum(BSTNode<T> *tree) const;      //最小值节点
         void insert(BSTNode<T>* &root, BSTNode<T>* z) const;     //插入节点到树中
         BSTNode<T> *search(BSTNode<T>* &root, T value) const;    //查找值为value的节点
         void preOrder(BSTNode<T> *tree) const;  //先序遍历
@@ -67,6 +69,64 @@ BSTree<T>::~BSTree(){
     if(root == NULL)
         return;
     FreeMemory(root);
+}
+
+/**
+ * @brief 查找最大值的节点
+ * @param node  二叉树的根结点
+ */
+template <class T>
+BSTNode<T> *BSTree<T>::maximum(BSTNode<T> *tree) const
+{
+    BSTNode<T> *p = tree;
+    while(p->right != NULL){
+        p = p->right;
+    }
+    if(p == NULL)
+        return NULL;
+    else
+        return p;
+}
+/**
+ * @brief 查找最大值
+ */
+template <class T>
+T BSTree<T>::maximum()
+{
+    BSTNode<T> *node = maximum(root);
+    if(node != NULL)
+        return node->key;
+    else
+        return (T)NULL; 
+}
+
+/**
+ * @brief 查找最小值的节点
+ * @param node  二叉树的根结点
+ */
+template <class T>
+BSTNode<T> *BSTree<T>::minimum(BSTNode<T> *tree) const
+{
+    BSTNode<T> *p = tree;
+    while(p->left != NULL){
+        p = p->left;
+    }
+    if(p == NULL)
+        return NULL;
+    else
+        return p;
+}
+/**
+ * @brief 查找最小值
+ */
+template <class T>
+T BSTree<T>::minimum()
+{
+    BSTNode<T> *node = minimum(root);
+    if(node != NULL)
+        return node->key;
+    else
+        return (T)NULL; 
 }
 
 
@@ -119,7 +179,7 @@ void BSTree<T>::insert(BSTNode<T>* &root, BSTNode<T>* z) const
  * @param key   要插入的值
  */
 template <class T>
-BSTNode<T>* BSTree<T>::insert(T key)
+BSTNode<T> *BSTree<T>::insert(T key)
 {
     BSTNode<T> *z=NULL;
 
@@ -136,7 +196,7 @@ BSTNode<T>* BSTree<T>::insert(T key)
  *        z     key为要查找的值的节点
  */
 template <class T>
-BSTNode<T>* BSTree<T>::search(BSTNode<T>* &root, T value) const
+BSTNode<T> *BSTree<T>::search(BSTNode<T>* &root, T value) const
 {
     BSTNode<T> *z = new BSTNode<T>(value, NULL, NULL, NULL);
     BSTNode<T> *node = root;
@@ -159,7 +219,7 @@ BSTNode<T>* BSTree<T>::search(BSTNode<T>* &root, T value) const
  * @param value   要查找的值
  */
 template <class T>
-BSTNode<T>* BSTree<T>::search(T value){
+BSTNode<T> *BSTree<T>::search(T value){
     
     return search(root, value);
     
