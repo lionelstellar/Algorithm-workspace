@@ -1,6 +1,5 @@
 #include<iostream>
 #include<vector>
-#include"VectorUtils.h"
 using namespace std;
 //三个内联函数，用来求每个节点的父、左子、右子节点
 inline int left(int parent)
@@ -17,25 +16,28 @@ inline int parent(int child)
 {
     return child >> 1;
 }
+
 //维护最大堆的性质
 void Max_Heapify(vector<int> &v, int i)
 {
     int size = v.size() - 1;   
-    int large;
+    int largest;
     int l = left(i);
     int r = right(i);
     //左子大于父节点,large = l
-    if(l <= size && v[l] > v[i])    large = l;
-    else                            large = i;
+    if(l <= size && v[l] > v[i])    
+        largest = l;
+    else                            
+        largest = i;
     
     //large取右子和左子、父中的较大值节点
-    if(r <= size && v[r] > v[large]){
-        large = r;
+    if(r <= size && v[r] > v[largest]){
+        largest = r;
     }
 
-    if(large != i){
-        swap(v[i],v[large]);
-        Max_Heapify(v,large);
+    if(largest != i){
+        swap(v[i],v[largest]);
+        Max_Heapify(v,largest);
     }
 }
 
@@ -61,16 +63,11 @@ void Heapsort(vector<int> &v)
         ret.push_back(v[i]);
         v.pop_back();
         Max_Heapify(v,1);
-        
-        //display(v);
-        
     }
     ret.push_back(v[1]);
-    //display(ret);
+    
     v = ret;
 }
-
-
 
 int main()
 {
@@ -78,8 +75,9 @@ int main()
     //arr为要排序的数组
 	int arr[] = {5,2,4,7,10,9,8,1,6,3};
 
-	//把数组放入向量中
+	//把数组放入向量中,首部添0模拟图示中的序号
 	vector<int> v(arr, arr + sizeof(arr)/sizeof(int));
+    v.insert(v.begin(),0);
 	
 	//对向量使用堆排序
 	Heapsort(v);
@@ -88,7 +86,4 @@ int main()
 	copy (v.begin(), v.end(), ostream_iterator<int> (cout, " "));
     cout << endl;
     
-    
-    
-
 }
