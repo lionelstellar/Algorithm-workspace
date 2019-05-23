@@ -7,7 +7,7 @@ struct ListNode {
     ListNode *next;
     ListNode(int x) : val(x), next(NULL) {}
  };
-
+//尾插法创建链表
  ListNode *create_linklist(int *arr, int n)
  {
      ListNode *head = new ListNode(arr[0]);
@@ -37,7 +37,6 @@ inline int parent(int child)
 }
 
 //维护最小堆的性质
-
 void Min_Heapify(vector<ListNode *> &v, int i)
 {
     int size = v.size() - 1;   
@@ -70,26 +69,7 @@ void Build_Min_Heap(vector<ListNode *> &v)
         Min_Heapify(v,i);
     }
 }
-/*/堆排序
-void Heapsort(vector<int> &v)
-{
-    vector<int> ret;
-    
-    Build_Min_Heap(v);
-    
-    for(int i = v.size()-1; i > 1; i--)
-    {
-        swap(v[i], v[1]);
-        ret.push_back(v[i]);
-        v.pop_back();
-        Min_Heapify(v,1);
-    }
-    ret.push_back(v[1]);
-    
-    v = ret;
-}
-*/
-
+//打印链表
 void display(ListNode *l){
     while(l!=NULL){
         cout << l->val << " ";
@@ -112,27 +92,22 @@ vector<int> k_merge(ListNode **L, int k){
         else
             minheap.push_back(L[i]);
     }
-    /*
-    cout << minheap[1]->val;
-    cout << minheap[2]->val;
-    cout << minheap[3]->val;
-    cout << minheap[4]->val;
-    cout << minheap[5]->val << endl;
-    */
+    
     //建堆
     Build_Min_Heap(minheap);
     //只要剩余链表多余1就循环
     while(k > 1){
+        
         ret.push_back(minheap[1]->val);
         minheap[1] = minheap[1]->next;
+        
         //根上的链表所有元素被取完
         if(minheap[1] == NULL){
             swap(minheap[1],minheap[k]);
             k--;
+            minheap.pop_back();
         }
-        else
-            minheap[1] = minheap[1]->next;
-        
+
         Min_Heapify(minheap,1); 
     }
     while(minheap[1] != NULL){
@@ -160,17 +135,5 @@ int main()
     copy (v.begin(), v.end(), ostream_iterator<int> (cout, " "));
     cout << endl;
     
-    /*
-	//把数组放入向量中,首部添0模拟图示中的序号
-	vector<int> v(arr, arr + sizeof(arr)/sizeof(int));
-    v.insert(v.begin(),0);
-	
-	//对向量使用堆排序
-	Heapsort(v);
-
-	//按顺序打印排序后向量中的所有元素
-	copy (v.begin(), v.end(), ostream_iterator<int> (cout, " "));
-    cout << endl;
-    */
-    
+      
 }
