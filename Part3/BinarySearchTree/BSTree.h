@@ -43,6 +43,7 @@ class BSTree{
         T minimum();    //最小值
         BSTNode<T> *insert(T value);    //插入值到树中
         BSTNode<T> *search(T value);    //查找值
+        BSTNode<T> *remove(T value);    //删除值
         void preOrder();    //先序遍历
         void inOrder();     //中序遍历
         void postOrder();   //后序遍历
@@ -55,6 +56,7 @@ class BSTree{
         void preOrder(BSTNode<T> *tree) const;  //先序遍历
         void inOrder(BSTNode<T> *tree) const;   //中序遍历
         void postOrder(BSTNode<T> *tree) const; //后序遍历
+        void remove(BSTNode<T>* &root, BSTNode<T>* z) const;    //删除节点z
 };
 
 // 构造函数
@@ -284,7 +286,51 @@ void BSTree<T>::postOrder(){
     cout << endl;
 }
 
+template <class T>
+void BSTree<T>::remove(BSTNode<T> *&root, BSTNode<T> *z) const
+{
+    BSTNode<T> *p = z;
+    while(p != NULL){
+        if(p->left == NULL && p->right == NULL){
+            if(p == p->parent->left)
+                p->parent->left = NULL;
+            else
+                p->parent->right = NULL;
+            p = NULL;    
+        }
+        else if(p->left != NULL && p->right == NULL){
+            p->key = p->left->key;
+            p = p->left;
+        }
+        else if(p->left != NULL && p->right != NULL){
+            p->key = p->right->key;
+            p = p->right;
+        }
+    }
+    
+}
 
+template <class T>
+BSTNode<T> *BSTree<T>::remove(T value)
+{
+    BSTNode<T> *z = search(value);
+    if(z == NULL)
+        return NULL;
+    else
+        remove(root, z);
+        return z;
+      
+}
+
+//Todo:
+// 找结点(x)的后继结点。即，查找"二叉树中数据值大于该结点"的"最小结点"。
+// BSTNode<T>* successor(BSTNode<T> *x);
+// 找结点(x)的前驱结点。即，查找"二叉树中数据值小于该结点"的"最大结点"。
+// BSTNode<T>* predecessor(BSTNode<T> *x);
+// (递归实现)查找"二叉树x"中键值为key的节点
+// BSTNode<T>* search(BSTNode<T>* x, T key) const;
+// (非递归实现)查找"二叉树x"中键值为key的节点
+// BSTNode<T>* iterativeSearch(BSTNode<T>* x, T key) const;
 
 
 

@@ -40,4 +40,8 @@ int main(){
     int min = tree->minimum();
     cout <<"min: " << min << endl;
 
+    tree->remove(5);
+    tree->preOrder();
+    tree->inOrder();
+
 }
