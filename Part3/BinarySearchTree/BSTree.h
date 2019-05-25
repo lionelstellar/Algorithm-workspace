@@ -10,10 +10,34 @@ class BSTNode{
         BSTNode *parent;
         BSTNode *left;
         BSTNode *right;
-    BSTNode(T value, BSTNode *p, BSTNode *l, BSTNode *r):
+        void displayChild();
+        BSTNode(T value, BSTNode *p, BSTNode *l, BSTNode *r):
             key(value),parent(p),left(l),right(r) {}
+    
+    private:
+        void displayChild(BSTNode *left, BSTNode *right) const;
+    
         
 };
+template <class T>
+void BSTNode<T>::displayChild(BSTNode *left, BSTNode *right) const{
+    if(left == NULL)
+        cout<< "left is NULL,";
+    else
+        cout<<"left is " << left->key <<","; 
+    
+    if(right == NULL)
+        cout<< "right is NULL";
+    else
+        cout<<"right is " << right->key; 
+    cout << endl;
+    
+}
+template <class T>
+void BSTNode<T>::displayChild(){
+    displayChild(left, right);
+}
+
 
 
 //定义一个异常，当插入值已存在于树中时可以抛出 throw MyException()
@@ -42,7 +66,8 @@ class BSTree{
         T maximum();    //最大值
         T minimum();    //最小值
         BSTNode<T> *insert(T value);    //插入值到树中
-        BSTNode<T> *search(T value);    //查找值
+        BSTNode<T> *search(T value);    //递归查找值
+        BSTNode<T> *iterativeSearch(T value); //迭代查找值
         BSTNode<T> *remove(T value);    //删除值
         void preOrder();    //先序遍历
         void inOrder();     //中序遍历
@@ -52,7 +77,8 @@ class BSTree{
         BSTNode<T> *maximum(BSTNode<T> *tree) const;      //最大值节点
         BSTNode<T> *minimum(BSTNode<T> *tree) const;      //最小值节点
         void insert(BSTNode<T>* &root, BSTNode<T>* z) const;     //插入节点到树中
-        BSTNode<T> *search(BSTNode<T>* &root, T value) const;    //查找值为value的节点
+        BSTNode<T> *search(BSTNode<T> *node, T value) const;    //递归查找值为value的节点
+        BSTNode<T> *iterativeSearch(BSTNode<T>* &root, T value) const;    //迭代查找值为value的节点
         void preOrder(BSTNode<T> *tree) const;  //先序遍历
         void inOrder(BSTNode<T> *tree) const;   //中序遍历
         void postOrder(BSTNode<T> *tree) const; //后序遍历
@@ -193,12 +219,12 @@ BSTNode<T> *BSTree<T>::insert(T key)
     return z;
 }
 /**
- * @brief 查找值对应的结点
- * @param node  二叉树的根节点
+ * @brief 迭代查找值对应的结点
+ * @param root  二叉树的根节点
  *        z     key为要查找的值的节点
  */
 template <class T>
-BSTNode<T> *BSTree<T>::search(BSTNode<T>* &root, T value) const
+BSTNode<T> *BSTree<T>::iterativeSearch(BSTNode<T>* &root, T value) const
 {
     BSTNode<T> *z = new BSTNode<T>(value, NULL, NULL, NULL);
     BSTNode<T> *node = root;
@@ -217,11 +243,43 @@ BSTNode<T> *BSTree<T>::search(BSTNode<T>* &root, T value) const
 }
 
 /**
- * @brief 查找值对应的结点
+ * @brief 迭代查找值对应的结点
+ * @param value   要查找的值
+ */
+template <class T>
+BSTNode<T> *BSTree<T>::iterativeSearch(T value){
+    
+    return iterativeSearch(root, value);
+    
+}
+/**
+ * @brief 递归查找值对应的结点
+ * @param node  二叉树的根节点
+ *        z     key为要查找的值的节点
+ */
+template <class T>
+BSTNode<T> *BSTree<T>::search(BSTNode<T> *node, T value) const
+{
+    if(node == NULL || node->key == value){
+        return node;
+    }
+        
+    else if(node->key > value){
+        return search(node->left, value);
+    }
+        
+    else{
+        return search(node->right, value);
+    }
+        
+}
+/**
+ * @brief 递归查找值对应的结点
  * @param value   要查找的值
  */
 template <class T>
 BSTNode<T> *BSTree<T>::search(T value){
+    cout << "value:" << value << endl;
     
     return search(root, value);
     

@@ -25,14 +25,11 @@ int main(){
     tree->postOrder();
     
     //查找
-    int value = 50;
-    BSTNode<int> *node = tree->search(value);
-    if(node != NULL)
-        cout << node->left->key << " " << node->right->key << endl;
-    else
-    {
-        cout << value << " is not in the tree" << endl;
-    }
+    int value1 = 9;
+    int value2 = 5;
+    
+    tree->search(value1)->displayChild(); 
+    tree->iterativeSearch(value2)->displayChild(); 
 
     //最大最小值
     int max = tree->maximum();
