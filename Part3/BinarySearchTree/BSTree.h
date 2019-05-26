@@ -69,6 +69,11 @@ class BSTree{
         BSTNode<T> *search(T value);    //递归查找值
         BSTNode<T> *iterativeSearch(T value); //迭代查找值
         BSTNode<T> *remove(T value);    //删除值
+
+        
+        BSTNode<T>* successor(BSTNode<T> *x);   //找到比该节点大的最小值
+        BSTNode<T>* predecessor(BSTNode<T> *x); //找到比该节点小的最大值
+
         void preOrder();    //先序遍历
         void inOrder();     //中序遍历
         void postOrder();   //后序遍历
@@ -79,10 +84,15 @@ class BSTree{
         void insert(BSTNode<T>* &root, BSTNode<T>* z) const;     //插入节点到树中
         BSTNode<T> *search(BSTNode<T> *node, T value) const;    //递归查找值为value的节点
         BSTNode<T> *iterativeSearch(BSTNode<T>* &root, T value) const;    //迭代查找值为value的节点
+        void remove(BSTNode<T>* &root, BSTNode<T>* z) const;    //删除节点z
+        
+        BSTNode<T>* successor(BSTNode<T> *tree, BSTNode<T> *x) const;   //找到比该节点大的最小值
+        BSTNode<T>* predecessor(BSTNode<T> *tree, BSTNode<T> *x) const; //找到比该节点小的最大值
+        
         void preOrder(BSTNode<T> *tree) const;  //先序遍历
         void inOrder(BSTNode<T> *tree) const;   //中序遍历
         void postOrder(BSTNode<T> *tree) const; //后序遍历
-        void remove(BSTNode<T>* &root, BSTNode<T>* z) const;    //删除节点z
+        
 };
 
 // 构造函数
@@ -279,11 +289,69 @@ BSTNode<T> *BSTree<T>::search(BSTNode<T> *node, T value) const
  */
 template <class T>
 BSTNode<T> *BSTree<T>::search(T value){
-    cout << "value:" << value << endl;
-    
     return search(root, value);
-    
 }
+/**
+ * @brief 找到比该节点大的最小值
+ * @param tree  树
+ *        value 值
+ */
+template <class T>
+BSTNode<T>* BSTree<T>::successor(BSTNode<T> *tree, BSTNode<T> *x) const
+{
+    if(x->right != NULL){
+        return minimum(x->right);
+    }
+    BSTNode<T> *y = x->parent;
+    while ((y!=NULL) && (x==y->right))
+    {
+        x = y;
+        y = y->parent;
+    }
+
+    return y;
+}
+
+/**
+ * @brief 找到比该节点大的最小值
+ * @param value 值
+ */
+template <class T>
+BSTNode<T>* BSTree<T>::successor(BSTNode<T> *x){
+    return successor(root, x);
+}   
+
+/**
+ * @brief 找到比该节点小的最大值
+ * @param tree  树
+ *        value 值
+ */
+template <class T>
+BSTNode<T>* BSTree<T>::predecessor(BSTNode<T> *tree, BSTNode<T> *x) const
+{
+    if(x->left != NULL){
+        return maximum(x->left);
+    }
+    
+    BSTNode<T> *y = x->parent;
+    while((y != NULL) && (x == y->left)){
+        x = y;
+        y = y->parent;
+    }
+    return y;
+}
+
+/**
+ * @brief 找到比该节点小的最大值
+ * @param value 值
+ */
+template <class T>
+BSTNode<T>* BSTree<T>::predecessor(BSTNode<T> *x){
+    return predecessor(root, x);
+}   
+        
+        
+        
 
 
 
@@ -379,16 +447,3 @@ BSTNode<T> *BSTree<T>::remove(T value)
         return z;
       
 }
-
-//Todo:
-// 找结点(x)的后继结点。即，查找"二叉树中数据值大于该结点"的"最小结点"。
-// BSTNode<T>* successor(BSTNode<T> *x);
-// 找结点(x)的前驱结点。即，查找"二叉树中数据值小于该结点"的"最大结点"。
-// BSTNode<T>* predecessor(BSTNode<T> *x);
-// (递归实现)查找"二叉树x"中键值为key的节点
-// BSTNode<T>* search(BSTNode<T>* x, T key) const;
-// (非递归实现)查找"二叉树x"中键值为key的节点
-// BSTNode<T>* iterativeSearch(BSTNode<T>* x, T key) const;
-
-
-

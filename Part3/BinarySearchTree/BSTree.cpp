@@ -37,6 +37,11 @@ int main(){
     int min = tree->minimum();
     cout <<"min: " << min << endl;
 
+    //前驱和后继
+    cout << tree->successor(tree->search(9))->key << endl;
+    cout << tree->predecessor(tree->search(6))->key << endl;
+
+    //删除节点后遍历
     tree->remove(5);
     tree->preOrder();
     tree->inOrder();
