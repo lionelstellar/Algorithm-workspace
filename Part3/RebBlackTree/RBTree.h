@@ -17,7 +17,13 @@ class RBTNode{
             key(value),parent(p),left(l),right(r) {}
     
     private:
-        void displayChild(RBTNode *left, RBTNode *right) const;
-    
-        
+        void displayChild(RBTNode *left, RBTNode *right) const;      
+};
+
+template <class T>
+class RBTree{
+    public:
+        RBTree();
+        ~RBTree();
+        RBTNode<T> *root;
 };
