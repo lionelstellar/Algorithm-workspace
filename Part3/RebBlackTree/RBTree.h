@@ -8,13 +8,14 @@ enum RBTColor{RED, BLACK};
 template <class T>
 class RBTNode{
     public:
-        int key;
+        T key;
+        RBTColor color;
         RBTNode *parent;
         RBTNode *left;
         RBTNode *right;
         void displayChild();
-        RBTNode(T value, RBTNode *p, RBTNode *l, RBTNode *r):
-            key(value),parent(p),left(l),right(r) {}
+        RBTNode( T value, RBTColor c, RBTNode *p, RBTNode *l, RBTNode *r):
+            key(value), color(c), parent(p), left(l), right(r) {}
     
     private:
         void displayChild(RBTNode *left, RBTNode *right) const;      
@@ -24,7 +25,8 @@ class RBTNode{
 /**
  * @brief 红黑树
  * 1. 节点的颜色是红或黑
- * 2. 根和叶子是黑
+ * 2. 根是黑色
+ * 3. 叶子是黑色
  * 3. 红节点的两个子节点是黑的
  * 4. 任一节点到其所有后代叶节点的简单路径上，包含相同数目的黑色节点，该值为节点的黑高bh(x)
  */
@@ -34,9 +36,13 @@ class RBTree{
         RBTree();
         ~RBTree();
         RBTNode<T> *root;
+        
+        RBTNode<T> *insert(T value);    //插入值到树中
     private:
         void leftRotate(RBTNode<T>* &root, RBTNode<T>* x);      //左旋
         void rightRotate(RBTNode<T>* &root, RBTNode<T>* y);     //右旋
+        void insert(RBTNode<T>* &root, RBTNode<T>* z);          //插入节点到树中
+        void insertFixUp(RBTNode<T>* &root, RBTNode<T>* z);     //插入后修复红黑树性质
 };
 
 /**
@@ -117,4 +123,113 @@ void RBTree<T>::rightRotate(RBTNode<T>* &root, RBTNode<T>* y)
     y->parent = x;
 
 
+}
+/**
+ * @brief 将已结点插入到红黑树中的节点修复红黑性质
+ * @param root  二叉树的根结点
+ *        z     插入的结点
+ */
+template <class T>
+void RBTree<T>::insertFixUp(RBTNode<T>* &root, RBTNode<T>* z)
+{
+    RBTNode<T> *y;
+    while(z->parent->color == RED){
+        // z.p是一个其父的左子
+        if(z->parent == z->parent->left){
+            // y为叔节点
+            y = z->parent->parent->right;
+            // 情况1：叔也为红
+            if(y->color == RED){
+                z->parent->color = BLACK;
+                y->color = BLACK;
+                z->parent->parent->color = RED;
+            
+                z = z->parent->parent;
+            }
+            // 情况2：叔为黑，z为右子
+            else if(z == z->parent->right){
+                z = z->parent;
+                leftRotate(root, z);
+            }
+            // 情况3：叔为黑，z为左子
+            else{
+                z->parent->parent->color = RED;
+                z->parent->color = BLACK;
+                rightRotate(root, z->parent->parent); 
+            }
+        }
+        // z.p是其父的右子
+        else{
+            // y为叔节点
+            y = z->parent->parent->left;
+            // 情况1：叔也为红
+            if(y->color == RED){
+                y->color = BLACK;
+                z->parent->color = BLACK;
+                z->parent->parent->color = RED;
+
+                z = z->parent->parent;
+            }
+            else{
+                // 情况2：z为左子
+                if(z == z->panret->left){
+                    z = z->parent;
+                    rightRotate(root, z);
+                }
+                // 情况3：z为右子
+                else{
+                    z->parent->parent->color = RED;
+                    z->parent->color = BLACK;
+                    leftRotate(root,z->parent->parent);
+                }
+            }
+        }
+        
+    }
+    root->color = BLACK;
+
+}
+
+/**
+ * @brief 将结点插入到红黑树中，保持二叉搜索树的性质
+ * @param root  二叉树的根结点
+ *        z     插入的结点
+ */
+template <class T>
+void RBTree<T>::insert(RBTNode<T>* &root, RBTNode<T> *z)
+{
+    RBTNode<T> *y = NULL;
+    RBTNode<T> *x = root;
+    while(x != NULL){
+        y = x;
+        if(z->key < x->key)
+            x = x->left;
+        else if(z->key > x->key)
+            x = x->right;
+    }
+
+    z->parent = y;
+    if(y == NULL)
+        root = z;
+    else if(z->key < y->key)
+        y->left = z;
+    else
+        y->right = z;
+    
+    insertFixUp(root, z);
+
+} 
+
+
+/**
+ * @brief 将值插入到红黑树中
+ * @param key   要插入的值
+ */
+template <class T>
+RBTNode<T> RBTree<T>::*insert(RBTNode<T>* &root, T key)
+{
+    RBTNode<T> *z = new RBTNode<T>(key, RED, NULL, NULL, NULL);
+    if(z == NULL)
+        return NULL;
+    insert(root,z);
 }

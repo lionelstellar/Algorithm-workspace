@@ -170,7 +170,7 @@ T BSTree<T>::minimum()
 
 /**
  * @brief 将结点插入到二叉树中
- * @param node  二叉树的根结点
+ * @param root  二叉树的根结点
  *        z     插入的结点
  */
 template <class T>
