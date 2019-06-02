@@ -45,6 +45,20 @@ class RBTree{
         void insertFixUp(RBTNode<T>* &root, RBTNode<T>* z);     //插入后修复红黑树性质
 };
 
+// 构造函数
+template <class T>
+RBTree<T>::RBTree(){
+    root = NULL;
+}
+
+// 析构函数
+template <class T>
+RBTree<T>::~RBTree(){
+    if(root == NULL)
+        return;
+    FreeMemory(root);
+}
+
 /**
  * @brief 左旋
  * 
