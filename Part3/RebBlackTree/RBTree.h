@@ -397,12 +397,20 @@ void RBTree<T>::transplant(RBTNode<T>* &root, RBTNode<T> *u, RBTNode<T> *v) cons
  * @brief 删除某值的节点
  */
 template <class T>
-RBTNode<T> *RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const; 
+RBTNode<T> *RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
+{
+    ;
+} 
 /**
  * @brief 删除某值的节点
  */                //删除节点z
 template <class T>
-RBTNode<T> *RBTree<T>::removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const;            //删除后修复红黑树性质
+RBTNode<T> *RBTree<T>::removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const
+{
+    ;
+}           
+
+//删除后修复红黑树性质
 /**
  * @brief 删除某值的节点
  */
