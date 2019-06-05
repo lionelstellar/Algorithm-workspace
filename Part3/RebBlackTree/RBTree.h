@@ -399,7 +399,41 @@ void RBTree<T>::transplant(RBTNode<T>* &root, RBTNode<T> *u, RBTNode<T> *v) cons
 template <class T>
 RBTNode<T> *RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
 {
-    ;
+    RBTNode<T> y = z;
+    RBTColor y_origin_color = z->color;
+    RBTNode<T> x;
+    //左子为空，右子替代
+    if( z->left == NULL){
+        x = z->right;
+        transplant(root, z, z->right);
+    }
+    //右子为空，左子替代
+    else if(z->right == NULL){
+        x = z->left;
+        transplant(root, z, z->left);
+    } 
+    //双子非空，右子最小节点替代
+    else{
+        y = minimum(z->right);
+        y_origin_color = y->color;
+
+        //用z右子的最小节点替代z
+        if(y->parent == z)
+            x->parent = z;
+        else{
+            transplant(root, y, y->right);
+            y->right = z->right;
+            y->right->parent = y;
+        }
+
+        transplant(root, z, y);
+        y->left = z->left;
+        y->left->parent = y;
+        y->color = z->color;
+    }
+    //修复红黑性质
+    if(y_origin_color == BLACK)
+        removeFixUp(root, x);
 } 
 /**
  * @brief 删除某值的节点
