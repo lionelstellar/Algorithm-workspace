@@ -400,7 +400,8 @@ template <class T>
 RBTNode<T> *RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
 {
     RBTNode<T> y = z;
-    RBTColor y_origin_color = z->color;
+    RBTColor y_origin_color = y->color;
+    //x为可能变色的节点
     RBTNode<T> x;
     //左子为空，右子替代
     if( z->left == NULL){
@@ -416,6 +417,7 @@ RBTNode<T> *RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
     else{
         y = minimum(z->right);
         y_origin_color = y->color;
+        x = y->right;
 
         //用z右子的最小节点替代z
         if(y->parent == z)
@@ -441,7 +443,7 @@ RBTNode<T> *RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
 template <class T>
 RBTNode<T> *RBTree<T>::removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const
 {
-    ;
+    
 }           
 
 //删除后修复红黑树性质
