@@ -22,6 +22,7 @@ class RBTNode{
             //打印右子
             if(left == NULL)    cout << " right: null null,";
             else                {cout << " right: "; right->display();}
+            cout << endl;
             
         }
         //打印节点的key与color信息
@@ -443,6 +444,71 @@ RBTNode<T> *RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
 template <class T>
 RBTNode<T> *RBTree<T>::removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const
 {
+    RBTNode<T> w = new RBTColor();
+    while(x != root && x->color == BLACK){
+        // x为左子
+        if(x == x->parent->left){
+            w = x->parent->right;
+            // 情况1：兄弟为红
+            if(w->color == RED){
+                x->parent->color = RED;
+                w->color = BLACK;
+                leftRotate(root,x->parent);
+                x = x->parent->right;
+            }
+            // 情况2：兄弟为黑，兄弟左右子为黑
+            else if(w->left->color ==BLACK && w->right->color == BLACK){
+                w->color = RED;
+                x = x->parent;
+            }
+             // 情况3：兄弟为黑，兄弟左红右黑
+            else if(w->right->color == BLACK){
+                w->left->color = BLACK;
+                w->color = RED;
+                rightRotate(root, w);
+                w = x->parent->right;
+            }
+            // 情况4：兄弟为黑，兄弟右子为红
+            else{
+                w->color = x->parent->color;
+                x->parent->color = BLACK;
+                leftRotate(root,x->parent);
+                x = root;
+            }
+        }
+        // x为左子
+        else{
+            w = x->parent->left;
+            // 情况1：兄弟为红
+            if(w->color == RED){
+                x->parent->color = RED;
+                w->color = BLACK;
+                rightRotate(root, x->parent);
+                w = x->parent->left;
+            }
+            // 情况2：兄弟为黑，兄弟双子为黑
+            else if(w->left->color == BLACK && w->right->color == BLACK){
+                w->color = RED;
+                x = x->parent;
+            }
+            // 情况3：兄弟为黑，兄弟左黑右红
+            else if(w->left->color == BLACK){
+                w->color = RED;
+                w->right->color = BLACK;
+                leftRotate(root, w);
+                w = x->parent->left;
+            }
+            // 情况4：兄弟为黑，兄弟左子为红
+            else{
+                w->color = x->parent->color;
+                x->parent->color = BLACK;
+                rightRotate(root, x->parent);
+                x = root;
+            }
+
+        }
+    }
+    x->color = BLACK;
     
 }           
 
@@ -452,6 +518,8 @@ RBTNode<T> *RBTree<T>::removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const
  */
 template <class T>
 RBTNode<T> *RBTree<T>::remove(T value){
+    
+    if(search(T) ==)
     
 }
 /**

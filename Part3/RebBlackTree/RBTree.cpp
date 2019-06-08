@@ -24,4 +24,8 @@ int main()
     cout <<"最大值" << tree->maximum() << endl;
     //打印11的双子信息
     tree->search(11)->displayChild();
+
+    //删除节点7
+    tree->remove(7);
+    tree->preOrder();
 }
