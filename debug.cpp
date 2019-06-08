@@ -13,7 +13,19 @@ class RBTNode{
         RBTNode *parent;
         RBTNode *left;
         RBTNode *right;
-        void displayChild();
+        //打印左右子节点的key与color信息
+        void displayChild(){
+            //打印左子
+            if(left == NULL)    cout << "left: null null,";
+            else                {cout << "left: "; left->display();}
+
+            //打印右子
+            if(left == NULL)    cout << " right: null null,";
+            else                {cout << " right: "; right->display();}
+            cout << endl;
+            
+        }
+        //打印节点的key与color信息
         void display(){
             if(color == RED)    cout << key << " r,";
             else                cout << key << " b,";   
@@ -21,8 +33,6 @@ class RBTNode{
         RBTNode( T value, RBTColor c, RBTNode *p, RBTNode *l, RBTNode *r):
             key(value), color(c), parent(p), left(l), right(r) {}
     
-    private:
-        void displayChild(RBTNode *left, RBTNode *right) const; 
 };
 
 
@@ -41,9 +51,16 @@ class RBTree{
     public:
         RBTree();
         ~RBTree();
+
         RBTNode<T> *root;
+        RBTNode<T> *NIL;
+
+        T maximum();    //最大值
+        T minimum();    //最小值
         
         RBTNode<T> *insert(T value);    //插入值到树中
+        RBTNode<T> *search(T value);    //递归查找值
+        RBTNode<T> *remove(T value);    //删除某值的节点
 
 
         void preOrder();       //先序遍历
@@ -53,11 +70,20 @@ class RBTree{
 
 
     private:
+        RBTNode<T> *maximum(RBTNode<T> *tree) const;      //最大值节点
+        RBTNode<T> *minimum(RBTNode<T> *tree) const;      //最小值节点
         void leftRotate(RBTNode<T>* &root, RBTNode<T>* x) const;      //左旋
         void rightRotate(RBTNode<T>* &root, RBTNode<T>* y) const;     //右旋
         void insert(RBTNode<T>* &root, RBTNode<T>* z) const;          //插入节点到树中
         void insertFixUp(RBTNode<T>* &root, RBTNode<T>* z) const;     //插入后修复红黑树性质
 
+        RBTNode<T> *search(RBTNode<T> *node, T value) const;    //递归查找值为value的节点
+
+        void transplant(RBTNode<T>* &root, RBTNode<T> *u, RBTNode<T> *v) const;     //用v子树代替u子树
+        void remove(RBTNode<T>* &root, RBTNode<T>* z) const;                 //删除节点z
+        void removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const;            //删除后修复红黑树性质
+        
+        
         void preOrder(RBTNode<T>* tree) const;       //先序遍历
         void inOrder(RBTNode<T>* tree) const;        //中序遍历
         void postOrder(RBTNode<T>* tree) const;      //后序遍历
@@ -66,15 +92,72 @@ class RBTree{
 // 构造函数
 template <class T>
 RBTree<T>::RBTree(){
-    root = NULL;
+    NIL = new RBTNode<T>(T(NULL),BLACK,NULL,NULL,NULL);
+    root = NIL;
 }
 
 // 析构函数
 template <class T>
 RBTree<T>::~RBTree(){
-    if(root == NULL)
+    if(root == NIL)
         return;
     FreeMemory(root);
+}
+/**
+ * @brief 查找最大值的节点
+ * @param node  二叉树的根结点
+ */
+template <class T>
+RBTNode<T> *RBTree<T>::maximum(RBTNode<T> *tree) const
+{
+    RBTNode<T> *p = tree;
+    while(p->right != NIL){
+        p = p->right;
+    }
+    if(p == NIL)
+        return NIL;
+    else
+        return p;
+}
+/**
+ * @brief 查找最大值
+ */
+template <class T>
+T RBTree<T>::maximum()
+{
+    RBTNode<T> *node = maximum(root);
+    if(node != NIL)
+        return node->key;
+    else
+        return (T)NULL; 
+}
+/**
+ * @brief 查找最小值的节点
+ * @param node  二叉树的根结点
+ */
+template <class T>
+RBTNode<T> *RBTree<T>::minimum(RBTNode<T> *tree) const
+{
+    RBTNode<T> *p = tree;
+    while(p->left != NIL){
+        p = p->left;
+    }
+    if(p == NIL)
+        return NIL;
+    else
+        return p;
+}
+/**
+ * @brief 查找最小值
+ */
+template <class T>
+T RBTree<T>::minimum()
+{
+    RBTNode<T> *node = minimum(root);
+    if(node != NIL)
+        return node->key;
+    else
+        return (T)NULL; 
 }
 
 /**
@@ -91,19 +174,19 @@ template <class T>
 void RBTree<T>::leftRotate(RBTNode<T>* &root, RBTNode<T>* x) const
 {
     RBTNode<T> *y = x->right;
-    //右子为NULL，无法左旋
-    if( y == NULL)
+    //右子为NIL，无法左旋
+    if( y == NIL)
         return;
 
-    //右子非NULL时进行三步操作
+    //右子非NIL时进行三步操作
     //y的左子β，链接到x的右子
     x->right = y->left;
-    if(y->left != NULL)
+    if(y->left != NIL)
         y->left->parent = x;
 
     //将x的父节点作为y的父节点
     y->parent = x->parent;
-    if(x->parent == NULL)
+    if(x->parent == NIL)
         root = y;
     else if(x == x->parent->left)
         x->parent->left = y;
@@ -130,19 +213,19 @@ template <class T>
 void RBTree<T>::rightRotate(RBTNode<T>* &root, RBTNode<T>* y) const
 {
     RBTNode<T> *x = y->left;
-    //左子为NULL，无法右旋
-    if( x == NULL)
+    //左子为NIL，无法右旋
+    if( x == NIL)
         return;
 
-    //左子非NULL时进行三步操作
+    //左子非NIL时进行三步操作
     //x的右子β，链接为y的左子
     y->left = x->right;
-    if(x->right != NULL)
+    if(x->right != NIL)
         x->right->parent = y;
 
     //将y的父节点作为x的父节点
     x->parent = y->parent;
-    if(y->parent == NULL)
+    if(y->parent == NIL)
         root = x;
     else if(y == y->parent->left)
         y->parent->left = x;
@@ -165,9 +248,9 @@ template <class T>
 void RBTree<T>::insertFixUp(RBTNode<T>* &root, RBTNode<T>* z) const
 {
     RBTNode<T> *y;
-    while(z->parent && z->parent->color == RED){
+    while(z->parent != NIL && z->parent->color == RED){
         // z.p是一个其父的左子
-        if(z->parent == z->parent->left){
+        if(z->parent == z->parent->parent->left){
             // y为叔节点
             y = z->parent->parent->right;
             // 情况1：叔也为红
@@ -230,9 +313,9 @@ void RBTree<T>::insertFixUp(RBTNode<T>* &root, RBTNode<T>* z) const
 template <class T>
 void RBTree<T>::insert(RBTNode<T>* &root, RBTNode<T> *z) const
 {
-    RBTNode<T> *y = NULL;
+    RBTNode<T> *y = NIL;
     RBTNode<T> *x = root;
-    while(x != NULL){
+    while(x != NIL){
         y = x;
         if(z->key < x->key)
             x = x->left;
@@ -241,12 +324,13 @@ void RBTree<T>::insert(RBTNode<T>* &root, RBTNode<T> *z) const
     }
 
     z->parent = y;
-    if(y == NULL)
+    if(y == NIL)
         root = z;
     else if(z->key < y->key)
         y->left = z;
     else
         y->right = z;
+    
     
     insertFixUp(root, z);
 
@@ -260,13 +344,210 @@ void RBTree<T>::insert(RBTNode<T>* &root, RBTNode<T> *z) const
 template <class T>
 RBTNode<T> *RBTree<T>::insert(T key)
 {
-    RBTNode<T> *z = new RBTNode<T>(key, RED, NULL, NULL, NULL);
+    RBTNode<T> *z = new RBTNode<T>(key, RED, NULL, NIL, NIL);
     if(z == NULL)
         return NULL;
     insert(root,z);
     return z;
 }
 
+/**
+ * @brief 递归查找值对应的结点
+ * @param node  二叉树的根节点
+ *        z     key为要查找的值的节点
+ */
+template <class T>
+RBTNode<T> *RBTree<T>::search(RBTNode<T> *node, T value) const
+{
+    if(node == NIL || node->key == value){
+        return node;
+    }
+        
+    else if(node->key > value){
+        return search(node->left, value);
+    }
+        
+    else{
+        return search(node->right, value);
+    }
+        
+}
+/**
+ * @brief 递归查找值对应的结点
+ * @param value   要查找的值
+ */
+template <class T>
+RBTNode<T> *RBTree<T>::search(T value){
+    return search(root, value);
+}
+
+/**
+ * @brief 用v子树替换u子树
+ */
+template <class T>
+void RBTree<T>::transplant(RBTNode<T>* &root, RBTNode<T> *u, RBTNode<T> *v) const
+{   
+    //u为根
+    if(u->parent == NIL)
+        root = v;
+    else if(u == u->parent->left)
+        u->parent->left = v;
+    else
+        u->parent->right = v;
+
+    v->parent = u->parent;
+}
+/**
+ * @brief 删除某值的节点
+ */
+template <class T>
+void RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
+{
+    RBTNode<T> *y = z;
+    RBTColor y_origin_color = y->color;
+    //x为可能变色的节点
+    RBTNode<T> *x = new RBTNode<T>(0,RED,NULL,NULL,NULL);
+    //左子为空，右子替代
+    if( z->left == NIL){
+        x = z->right;
+        transplant(root, z, z->right);
+    }
+    //右子为空，左子替代
+    else if(z->right == NIL){
+        x = z->left;
+        transplant(root, z, z->left);
+    } 
+    //双子非空，右子最小节点替代
+    else{
+        y = minimum(z->right);
+        y_origin_color = y->color;
+        x = y->right;
+
+        //用z右子的最小节点替代z
+        if(y->parent == z)
+            x->parent = z;
+        else{
+            transplant(root, y, y->right);
+            y->right = z->right;
+            y->right->parent = y;
+        }
+
+        transplant(root, z, y);
+        y->left = z->left;
+        y->left->parent = y;
+        y->color = z->color;
+    }
+    //修复红黑性质
+    if(y_origin_color == BLACK)
+        removeFixUp(root, x);
+} 
+/**
+ * @brief 删除某值的节点
+ */                //删除节点z
+template <class T>
+void RBTree<T>::removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const
+{
+    RBTNode<T> *w;
+    while(x != root && x->color == BLACK){
+        // x为左子
+        if(x == x->parent->left){
+            w = x->parent->right;
+            // 情况1：兄弟为红
+            if(w->color == RED){
+                x->parent->color = RED;
+                w->color = BLACK;
+                leftRotate(root,x->parent);
+                x = x->parent->right;
+            }
+            // 情况2：兄弟为黑，兄弟左右子为黑
+            else if(w->left->color ==BLACK && w->right->color == BLACK){
+                w->color = RED;
+                x = x->parent;
+            }
+             // 情况3：兄弟为黑，兄弟左红右黑
+            else if(w->right->color == BLACK){
+                w->left->color = BLACK;
+                w->color = RED;
+                rightRotate(root, w);
+                w = x->parent->right;
+            }
+            // 情况4：兄弟为黑，兄弟右子为红
+            else{
+                w->color = x->parent->color;
+                x->parent->color = BLACK;
+                leftRotate(root,x->parent);
+                x = root;
+            }
+        }
+        // x为左子
+        else{
+            w = x->parent->left;
+            // 情况1：兄弟为红
+            if(w->color == RED){
+                x->parent->color = RED;
+                w->color = BLACK;
+                rightRotate(root, x->parent);
+                w = x->parent->left;
+            }
+            // 情况2：兄弟为黑，兄弟双子为黑
+            else if(w->left->color == BLACK && w->right->color == BLACK){
+                w->color = RED;
+                x = x->parent;
+            }
+            // 情况3：兄弟为黑，兄弟左黑右红
+            else if(w->left->color == BLACK){
+                w->color = RED;
+                w->right->color = BLACK;
+                leftRotate(root, w);
+                w = x->parent->left;
+            }
+            // 情况4：兄弟为黑，兄弟左子为红
+            else{
+                w->color = x->parent->color;
+                x->parent->color = BLACK;
+                rightRotate(root, x->parent);
+                x = root;
+            }
+
+        }
+    }
+    x->color = BLACK;
+    
+}           
+
+//删除后修复红黑树性质
+/**
+ * @brief 删除某值的节点
+ */
+template <class T>
+RBTNode<T> *RBTree<T>::remove(T value){
+    RBTNode<T> *node = search(value);
+    if(node != NIL)
+        remove(root, node);
+        
+    return node;
+}
+/**
+ * @brief 先序遍历
+ */
+template <class T>
+void RBTree<T>::preOrder(RBTNode<T>* tree) const
+{
+    if(tree != NIL){
+        tree->display();
+        preOrder(tree->left);
+        
+        preOrder(tree->right);
+    }
+}
+
+template <class T>
+void RBTree<T>::preOrder()
+{
+    cout << "先序遍历：";
+    preOrder(root);
+    cout << endl;
+}
 
 
 /**
@@ -275,7 +556,7 @@ RBTNode<T> *RBTree<T>::insert(T key)
 template <class T>
 void RBTree<T>::inOrder(RBTNode<T>* tree) const
 {
-    if(tree != NULL){
+    if(tree != NIL){
         inOrder(tree->left);
         tree->display();
         inOrder(tree->right);
@@ -304,6 +585,19 @@ int main()
         tree->insert(arr[i]);
     }
     
+    //tree->preOrder();
+    tree->preOrder();
+    
+    tree->insert(4);
+    tree->preOrder();
+    
 
-    tree->inOrder();
+    cout <<"最小值" << tree->minimum() << endl;
+    cout <<"最大值" << tree->maximum() << endl;
+    //打印11的双子信息
+    tree->search(11)->displayChild();
+
+    //删除节点7
+    tree->remove(7);
+    tree->preOrder();
 }

@@ -15,10 +15,12 @@ int main()
         tree->insert(arr[i]);
     }
     
+    //tree->preOrder();
     tree->preOrder();
-    //tree->inOrder();
+    
     tree->insert(4);
     tree->preOrder();
+    
 
     cout <<"最小值" << tree->minimum() << endl;
     cout <<"最大值" << tree->maximum() << endl;
