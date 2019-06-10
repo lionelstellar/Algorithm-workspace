@@ -17,7 +17,7 @@ int main()
     
     //tree->preOrder();
     tree->preOrder();
-    
+    //插入节点4
     tree->insert(4);
     tree->preOrder();
     
