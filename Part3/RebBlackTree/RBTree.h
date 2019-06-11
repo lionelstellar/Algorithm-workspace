@@ -571,3 +571,24 @@ void RBTree<T>::inOrder()
     cout << endl;
 }
 
+/**
+ * @brief 后序遍历
+ */
+template <class T>
+void RBTree<T>::postOrder(RBTNode<T>* tree) const
+{
+    if(tree != NIL){
+        postOrder(tree->left);
+        
+        postOrder(tree->right);
+        tree->display();
+    }
+}
+
+template <class T>
+void RBTree<T>::postOrder()
+{
+    cout << "后序遍历：";
+    postOrder(root);
+    cout << endl;
+}
