@@ -29,5 +29,7 @@ int main()
 
     //删除节点7
     tree->remove(7);
-    tree->preOrder();
+
+    //后序遍历
+    tree->postOrder();
 }
