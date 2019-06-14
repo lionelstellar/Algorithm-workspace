@@ -200,6 +200,9 @@ void OSTree<T>::OS_leftRotate(OSTNode<T>* &root, OSTNode<T>* x) const
     y->left = x;
     x->parent = y;
 
+    y->size = x->size;
+    x->size = x->left->size + x->right->size + 1;
+
 }
 
 /**
@@ -239,6 +242,9 @@ void OSTree<T>::OS_rightRotate(OSTNode<T>* &root, OSTNode<T>* y) const
     //x, y父子关系翻转
     x->right = y;
     y->parent = x;
+
+    x->size = y->size;
+    y->size = y->left->size + y->right->size + 1;
 
 
 }
