@@ -17,6 +17,8 @@
         "locale": "cpp",
         "ratio": "cpp",
         "system_error": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "__hash_table": "cpp",
+        "list": "cpp"
     }
 }

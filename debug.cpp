@@ -1,66 +1,68 @@
 #include<iostream>
+#include<vector>
 using namespace std;
 
-enum RBTColor{RED, BLACK};
+enum OSTColor {BLACK, RED};
+
 /**
- * @brief 红黑树的节点类
+ * @brief 顺序统计树的节点类
  */
 template <class T>
-class RBTNode{
+class OSTNode{
     public:
         T key;
-        RBTColor color;
-        RBTNode *parent;
-        RBTNode *left;
-        RBTNode *right;
-        //打印左右子节点的key与color信息
+        OSTNode *parent;
+        OSTNode *left;
+        OSTNode *right;
+        OSTColor color;
+        int size;
+
+        //打印左右子节点的key、color、size信息
         void displayChild(){
             //打印左子
-            if(left == NULL)    cout << "left: null null,";
+            if(left == NULL)    cout << "left: null null ( null ),";
             else                {cout << "left: "; left->display();}
 
             //打印右子
-            if(left == NULL)    cout << " right: null null,";
+            if(left == NULL)    cout << " right: null null  ( null ),";
             else                {cout << " right: "; right->display();}
             cout << endl;
             
         }
         //打印节点的key与color信息
         void display(){
-            if(color == RED)    cout << key << " r,";
-            else                cout << key << " b,";   
+            if(color == RED)    cout << key << " r" << " ( " << size << " ),";
+            else                cout << key << " b" << " ( " << size << " ),";   
         }
-        RBTNode( T value, RBTColor c, RBTNode *p, RBTNode *l, RBTNode *r):
-            key(value), color(c), parent(p), left(l), right(r) {}
-    
+
+        OSTNode(T value, OSTColor c, OSTNode *p, OSTNode *l, OSTNode *r,  int s):
+            key(value),color(c),parent(p),left(l),right(r),size(s) {}
+
+
 };
 
-
-
-
 /**
- * @brief 红黑树
- * 1. 节点的颜色是红或黑
- * 2. 根是黑色
- * 3. 叶子是黑色
- * 3. 红节点的两个子节点是黑的
- * 4. 任一节点到其所有后代叶节点的简单路径上，包含相同数目的黑色节点，该值为节点的黑高bh(x)
+ * @brief 顺序统计树
+ * 增加了节点size信息的顺序统计树
+ * x.size = x.left.size + x.right.size + 1;
+ * NIL.size = 0;
  */
 template <class T>
-class RBTree{
+class OSTree{
     public:
-        RBTree();
-        ~RBTree();
+        OSTree();
+        ~OSTree();
 
-        RBTNode<T> *root;
-        RBTNode<T> *NIL;
+        OSTNode<T> *root;
+        OSTNode<T> *NIL;
 
         T maximum();    //最大值
         T minimum();    //最小值
         
-        RBTNode<T> *insert(T value);    //插入值到树中
-        RBTNode<T> *search(T value);    //递归查找值
-        RBTNode<T> *remove(T value);    //删除某值的节点
+        OSTNode<T> *OS_insert(T value);    //插入值到树中
+        OSTNode<T> *search(T value);       //递归查找值
+        OSTNode<T> *OS_select(int rank);   //查找第i小的值,即秩为i的节点
+        OSTNode<T> *OS_remove(T value);    //删除某值的节点
 
 
         void preOrder();       //先序遍历
@@ -70,47 +72,48 @@ class RBTree{
 
 
     private:
-        RBTNode<T> *maximum(RBTNode<T> *tree) const;      //最大值节点
-        RBTNode<T> *minimum(RBTNode<T> *tree) const;      //最小值节点
-        void leftRotate(RBTNode<T>* &root, RBTNode<T>* x) const;      //左旋
-        void rightRotate(RBTNode<T>* &root, RBTNode<T>* y) const;     //右旋
-        void insert(RBTNode<T>* &root, RBTNode<T>* z) const;          //插入节点到树中
-        void insertFixUp(RBTNode<T>* &root, RBTNode<T>* z) const;     //插入后修复红黑树性质
+        OSTNode<T> *maximum(OSTNode<T> *tree) const;      //最大值节点
+        OSTNode<T> *minimum(OSTNode<T> *tree) const;      //最小值节点
+        void OS_leftRotate(OSTNode<T>* &root, OSTNode<T>* x) const;      //左旋
+        void OS_rightRotate(OSTNode<T>* &root, OSTNode<T>* y) const;     //右旋
+        void OS_insert(OSTNode<T>* &root, OSTNode<T>* z) const;          //插入节点到树中
+        void OS_insertFixUp(OSTNode<T>* &root, OSTNode<T>* z) const;     //插入后修复顺序统计树性质
 
-        RBTNode<T> *search(RBTNode<T> *node, T value) const;    //递归查找值为value的节点
+        OSTNode<T> *search(OSTNode<T> *node, T value) const;             //递归查找值为value的节点
+        OSTNode<T> *OS_select(OSTNode<T> *node, int rank) const;         //查找第i小的值,即秩为i的节点
 
-        void transplant(RBTNode<T>* &root, RBTNode<T> *u, RBTNode<T> *v) const;     //用v子树代替u子树
-        void remove(RBTNode<T>* &root, RBTNode<T>* z) const;                 //删除节点z
-        void removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const;            //删除后修复红黑树性质
+        void OS_transplant(OSTNode<T>* &root, OSTNode<T> *u, OSTNode<T> *v) const;     //用v子树代替u子树
+        void OS_remove(OSTNode<T>* &root, OSTNode<T>* z) const;                 //删除节点z
+        void OS_removeFixUp(OSTNode<T>* &root, OSTNode<T>* x) const;            //删除后修复顺序统计树性质
         
         
-        void preOrder(RBTNode<T>* tree) const;       //先序遍历
-        void inOrder(RBTNode<T>* tree) const;        //中序遍历
-        void postOrder(RBTNode<T>* tree) const;      //后序遍历
+        void preOrder(OSTNode<T>* tree) const;       //先序遍历
+        void inOrder(OSTNode<T>* tree) const;        //中序遍历
+        void postOrder(OSTNode<T>* tree) const;      //后序遍历
 };
 
 // 构造函数
 template <class T>
-RBTree<T>::RBTree(){
-    NIL = new RBTNode<T>(T(NULL),BLACK,NULL,NULL,NULL);
+OSTree<T>::OSTree(){
+    NIL = new OSTNode<T>(T(NULL),BLACK,NULL,NULL,NULL,0);
     root = NIL;
 }
 
 // 析构函数
 template <class T>
-RBTree<T>::~RBTree(){
+OSTree<T>::~OSTree(){
     if(root == NIL)
         return;
     FreeMemory(root);
 }
 /**
  * @brief 查找最大值的节点
- * @param node  二叉树的根结点
+ * @param tree 根结点
  */
 template <class T>
-RBTNode<T> *RBTree<T>::maximum(RBTNode<T> *tree) const
+OSTNode<T> *OSTree<T>::maximum(OSTNode<T> *tree) const
 {
-    RBTNode<T> *p = tree;
+    OSTNode<T> *p = tree;
     while(p->right != NIL){
         p = p->right;
     }
@@ -123,9 +126,9 @@ RBTNode<T> *RBTree<T>::maximum(RBTNode<T> *tree) const
  * @brief 查找最大值
  */
 template <class T>
-T RBTree<T>::maximum()
+T OSTree<T>::maximum()
 {
-    RBTNode<T> *node = maximum(root);
+    OSTNode<T> *node = maximum(root);
     if(node != NIL)
         return node->key;
     else
@@ -136,9 +139,9 @@ T RBTree<T>::maximum()
  * @param node  二叉树的根结点
  */
 template <class T>
-RBTNode<T> *RBTree<T>::minimum(RBTNode<T> *tree) const
+OSTNode<T> *OSTree<T>::minimum(OSTNode<T> *tree) const
 {
-    RBTNode<T> *p = tree;
+    OSTNode<T> *p = tree;
     while(p->left != NIL){
         p = p->left;
     }
@@ -151,9 +154,9 @@ RBTNode<T> *RBTree<T>::minimum(RBTNode<T> *tree) const
  * @brief 查找最小值
  */
 template <class T>
-T RBTree<T>::minimum()
+T OSTree<T>::minimum()
 {
-    RBTNode<T> *node = minimum(root);
+    OSTNode<T> *node = minimum(root);
     if(node != NIL)
         return node->key;
     else
@@ -171,9 +174,9 @@ T RBTree<T>::minimum()
  * 
  */
 template <class T>
-void RBTree<T>::leftRotate(RBTNode<T>* &root, RBTNode<T>* x) const
+void OSTree<T>::OS_leftRotate(OSTNode<T>* &root, OSTNode<T>* x) const
 {
-    RBTNode<T> *y = x->right;
+    OSTNode<T> *y = x->right;
     //右子为NIL，无法左旋
     if( y == NIL)
         return;
@@ -197,6 +200,9 @@ void RBTree<T>::leftRotate(RBTNode<T>* &root, RBTNode<T>* x) const
     y->left = x;
     x->parent = y;
 
+    y->size = x->size;
+    x->size = x->left->size + x->right->size + 1;
+
 }
 
 /**
@@ -210,9 +216,9 @@ void RBTree<T>::leftRotate(RBTNode<T>* &root, RBTNode<T>* x) const
  * 
  */
 template <class T>
-void RBTree<T>::rightRotate(RBTNode<T>* &root, RBTNode<T>* y) const
+void OSTree<T>::OS_rightRotate(OSTNode<T>* &root, OSTNode<T>* y) const
 {
-    RBTNode<T> *x = y->left;
+    OSTNode<T> *x = y->left;
     //左子为NIL，无法右旋
     if( x == NIL)
         return;
@@ -237,17 +243,20 @@ void RBTree<T>::rightRotate(RBTNode<T>* &root, RBTNode<T>* y) const
     x->right = y;
     y->parent = x;
 
+    x->size = y->size;
+    y->size = y->left->size + y->right->size + 1;
+
 
 }
 /**
- * @brief 将已结点插入到红黑树中的节点修复红黑性质
+ * @brief 将已结点插入到顺序统计树中的节点修复顺序统计性质
  * @param root  二叉树的根结点
  *        z     插入的结点
  */
 template <class T>
-void RBTree<T>::insertFixUp(RBTNode<T>* &root, RBTNode<T>* z) const
+void OSTree<T>::OS_insertFixUp(OSTNode<T>* &root, OSTNode<T>* z) const
 {
-    RBTNode<T> *y;
+    OSTNode<T> *y;
     while(z->parent != NIL && z->parent->color == RED){
         // z.p是一个其父的左子
         if(z->parent == z->parent->parent->left){
@@ -264,13 +273,13 @@ void RBTree<T>::insertFixUp(RBTNode<T>* &root, RBTNode<T>* z) const
             // 情况2：叔为黑，z为右子
             else if(z == z->parent->right){
                 z = z->parent;
-                leftRotate(root, z);
+                OS_leftRotate(root, z);
             }
             // 情况3：叔为黑，z为左子
             else{
                 z->parent->parent->color = RED;
                 z->parent->color = BLACK;
-                rightRotate(root, z->parent->parent); 
+                OS_rightRotate(root, z->parent->parent); 
             }
         }
         // z.p是其父的右子
@@ -289,13 +298,13 @@ void RBTree<T>::insertFixUp(RBTNode<T>* &root, RBTNode<T>* z) const
                 // 情况2：z为左子
                 if(z == z->parent->left){
                     z = z->parent;
-                    rightRotate(root, z);
+                    OS_rightRotate(root, z);
                 }
                 // 情况3：z为右子
                 else{
                     z->parent->parent->color = RED;
                     z->parent->color = BLACK;
-                    leftRotate(root,z->parent->parent);
+                    OS_leftRotate(root,z->parent->parent);
                 }
             }
         }
@@ -306,20 +315,23 @@ void RBTree<T>::insertFixUp(RBTNode<T>* &root, RBTNode<T>* z) const
 }
 
 /**
- * @brief 将结点插入到红黑树中，保持二叉搜索树的性质
+ * @brief 将结点插入到顺序统计树中，保持二叉搜索树的性质
  * @param root  二叉树的根结点
  *        z     插入的结点
  */
 template <class T>
-void RBTree<T>::insert(RBTNode<T>* &root, RBTNode<T> *z) const
+void OSTree<T>::OS_insert(OSTNode<T>* &root, OSTNode<T> *z) const
 {
-    RBTNode<T> *y = NIL;
-    RBTNode<T> *x = root;
+    OSTNode<T> *y = NIL;
+    OSTNode<T> *x = root;
+    
     while(x != NIL){
         y = x;
+        x->size = x->size + 1;
         if(z->key < x->key)
             x = x->left;
-        else if(z->key > x->key)
+        //顺序统计🌲不再要求关键字各不相同
+        else if(z->key >= x->key)
             x = x->right;
     }
 
@@ -332,24 +344,29 @@ void RBTree<T>::insert(RBTNode<T>* &root, RBTNode<T> *z) const
         y->right = z;
     
     
-    insertFixUp(root, z);
+    OS_insertFixUp(root, z);
 
 } 
 
 
 /**
- * @brief 将值插入到红黑树中
+ * @brief 将值插入到顺序统计树中
  * @param key   要插入的值
  */
 template <class T>
-RBTNode<T> *RBTree<T>::insert(T key)
+OSTNode<T> *OSTree<T>::OS_insert(T key)
 {
-    RBTNode<T> *z = new RBTNode<T>(key, RED, NULL, NIL, NIL);
+    OSTNode<T> *z = new OSTNode<T>(key, RED, NULL, NIL, NIL, 1);
     if(z == NULL)
         return NULL;
-    insert(root,z);
+    OS_insert(root,z);
     return z;
 }
+
+
+
+
+
 
 /**
  * @brief 递归查找值对应的结点
@@ -357,7 +374,7 @@ RBTNode<T> *RBTree<T>::insert(T key)
  *        z     key为要查找的值的节点
  */
 template <class T>
-RBTNode<T> *RBTree<T>::search(RBTNode<T> *node, T value) const
+OSTNode<T> *OSTree<T>::search(OSTNode<T> *node, T value) const
 {
     if(node == NIL || node->key == value){
         return node;
@@ -377,15 +394,47 @@ RBTNode<T> *RBTree<T>::search(RBTNode<T> *node, T value) const
  * @param value   要查找的值
  */
 template <class T>
-RBTNode<T> *RBTree<T>::search(T value){
+OSTNode<T> *OSTree<T>::search(T value){
     return search(root, value);
+}
+
+/**
+ * @brief 查找秩为rank的节点
+ * @param   node   要查找的树的根
+ *          rank   要查找的秩
+ */
+template <class T>
+OSTNode<T> *OSTree<T>::OS_select(OSTNode<T> *node, int rank) const
+{
+    while(rank != node->left->size + 1){
+        if(rank < node->left->size + 1){
+            node = node->left;
+        }
+        else{
+            node = node->right;
+            rank = rank - (node->left->size + 1);
+        }
+    }
+    
+}
+/**
+ * @brief 查找秩为rank的节点
+ * @param rank   要查找的秩
+ */
+template <class T>
+OSTNode<T> *OSTree<T>::OS_select(int rank){
+    //秩超出了树的大小
+    if(rank > root->size){
+        return (OSTNode<T>)NULL;
+    }
+    return OS_select(root, rank);
 }
 
 /**
  * @brief 用v子树替换u子树
  */
 template <class T>
-void RBTree<T>::transplant(RBTNode<T>* &root, RBTNode<T> *u, RBTNode<T> *v) const
+void OSTree<T>::OS_transplant(OSTNode<T>* &root, OSTNode<T> *u, OSTNode<T> *v) const
 {   
     //u为根
     if(u->parent == NIL)
@@ -401,12 +450,12 @@ void RBTree<T>::transplant(RBTNode<T>* &root, RBTNode<T> *u, RBTNode<T> *v) cons
  * @brief 删除某值的节点
  */
 template <class T>
-void RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
+void OSTree<T>::OS_remove(OSTNode<T>* &root, OSTNode<T>* z) const
 {
-    RBTNode<T> *y = z;
-    RBTColor y_origin_color = y->color;
+    OSTNode<T> *y = z;
+    OSTColor y_origin_color = y->color;
     //x为可能变色的节点
-    RBTNode<T> *x = new RBTNode<T>(0,RED,NULL,NULL,NULL);
+    OSTNode<T> *x = new OSTNode<T>(0,RED,NULL,NULL,NULL);
     //左子为空，右子替代
     if( z->left == NIL){
         x = z->right;
@@ -437,7 +486,7 @@ void RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
         y->left->parent = y;
         y->color = z->color;
     }
-    //修复红黑性质
+    //修复顺序统计性质
     if(y_origin_color == BLACK)
         removeFixUp(root, x);
 } 
@@ -445,9 +494,9 @@ void RBTree<T>::remove(RBTNode<T>* &root, RBTNode<T>* z) const
  * @brief 删除某值的节点
  */                //删除节点z
 template <class T>
-void RBTree<T>::removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const
+void OSTree<T>::OS_removeFixUp(OSTNode<T>* &root, OSTNode<T>* x) const
 {
-    RBTNode<T> *w;
+    OSTNode<T> *w;
     while(x != root && x->color == BLACK){
         // x为左子
         if(x == x->parent->left){
@@ -515,13 +564,13 @@ void RBTree<T>::removeFixUp(RBTNode<T>* &root, RBTNode<T>* x) const
     
 }           
 
-//删除后修复红黑树性质
+//删除后修复顺序统计树性质
 /**
  * @brief 删除某值的节点
  */
 template <class T>
-RBTNode<T> *RBTree<T>::remove(T value){
-    RBTNode<T> *node = search(value);
+OSTNode<T> *OSTree<T>::OS_remove(T value){
+    OSTNode<T> *node = search(value);
     if(node != NIL)
         remove(root, node);
         
@@ -531,7 +580,7 @@ RBTNode<T> *RBTree<T>::remove(T value){
  * @brief 先序遍历
  */
 template <class T>
-void RBTree<T>::preOrder(RBTNode<T>* tree) const
+void OSTree<T>::preOrder(OSTNode<T>* tree) const
 {
     if(tree != NIL){
         tree->display();
@@ -542,7 +591,7 @@ void RBTree<T>::preOrder(RBTNode<T>* tree) const
 }
 
 template <class T>
-void RBTree<T>::preOrder()
+void OSTree<T>::preOrder()
 {
     cout << "先序遍历：";
     preOrder(root);
@@ -554,7 +603,7 @@ void RBTree<T>::preOrder()
  * @brief 中序遍历
  */
 template <class T>
-void RBTree<T>::inOrder(RBTNode<T>* tree) const
+void OSTree<T>::inOrder(OSTNode<T>* tree) const
 {
     if(tree != NIL){
         inOrder(tree->left);
@@ -564,31 +613,55 @@ void RBTree<T>::inOrder(RBTNode<T>* tree) const
 }
 
 template <class T>
-void RBTree<T>::inOrder()
+void OSTree<T>::inOrder()
 {
     cout << "中序遍历：";
     inOrder(root);
     cout << endl;
 }
 
+/**
+ * @brief 后序遍历
+ */
+template <class T>
+void OSTree<T>::postOrder(OSTNode<T>* tree) const
+{
+    if(tree != NIL){
+        postOrder(tree->left);
+        
+        postOrder(tree->right);
+        tree->display();
+    }
+}
+
+template <class T>
+void OSTree<T>::postOrder()
+{
+    cout << "后序遍历：";
+    postOrder(root);
+    cout << endl;
+}
+
 int main()
 {
+    //OSTNode<int> *NIL = new OSTNode<int>(NULL,BLACK,NULL,NULL,NULL,0);
     // arr为要插入的元素
     int arr[] = {11,2,14,1,7,5,8,15};
     // 建树
-    RBTree<int> *tree = new RBTree<int>();
+    OSTree<int> *tree = new OSTree<int>();
     
     
     
      //将元素循环插入树中
     for(int i = 0; i < sizeof(arr)/sizeof(int); i++){
-        tree->insert(arr[i]);
+        tree->OS_insert(arr[i]);
     }
     
     //tree->preOrder();
     tree->preOrder();
-    
-    tree->insert(4);
+    /*
+    //插入节点4
+    tree->OS_insert(4);
     tree->preOrder();
     
 
@@ -598,6 +671,9 @@ int main()
     tree->search(11)->displayChild();
 
     //删除节点7
-    tree->remove(7);
-    tree->preOrder();
+    tree->OS_remove(7);
+
+    //后序遍历
+    tree->postOrder();
+     */
 }

@@ -3,6 +3,7 @@
 using namespace std;
 int main()
 {
+    
     // arr为要插入的元素
     int arr[] = {11,2,14,1,7,5,8,15};
     // 建树

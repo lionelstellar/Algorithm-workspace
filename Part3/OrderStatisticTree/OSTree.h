@@ -35,8 +35,7 @@ class OSTNode{
         }
 
         OSTNode(T value, OSTNode<T> *p, OSTNode<T> *l, OSTNode<T> *r, OSTColor c, int s):
-        key(value),parent(p),left(l),right(r),color(c),size(s)
-        {}
+            key(value),parent(p),left(l),right(r),color(c),size(s) {}
 
 
 };
