@@ -18,6 +18,7 @@ int main()
     
     //tree->preOrder();
     tree->preOrder();
+    cout << tree->OS_rank(tree->search(8)) << endl;
     /*
     //插入节点4
     tree->OS_insert(4);

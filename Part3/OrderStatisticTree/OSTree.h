@@ -1,4 +1,5 @@
 #include<iostream>
+#include<vector>
 using namespace std;
 
 enum OSTColor {BLACK, RED};
@@ -10,9 +11,9 @@ template <class T>
 class OSTNode{
     public:
         T key;
-        OSTNode<T> *parent;
-        OSTNode<T> *left;
-        OSTNode<T> *right;
+        OSTNode *parent;
+        OSTNode *left;
+        OSTNode *right;
         OSTColor color;
         int size;
 
@@ -34,8 +35,8 @@ class OSTNode{
             else                cout << key << " b" << " ( " << size << " ),";   
         }
 
-        OSTNode(T value, OSTNode<T> *p, OSTNode<T> *l, OSTNode<T> *r, OSTColor c, int s):
-            key(value),parent(p),left(l),right(r),color(c),size(s) {}
+        OSTNode(T value, OSTColor c, OSTNode *p, OSTNode *l, OSTNode *r,  int s):
+            key(value),color(c),parent(p),left(l),right(r),size(s) {}
 
 
 };
@@ -61,6 +62,7 @@ class OSTree{
         OSTNode<T> *OS_insert(T value);    //插入值到树中
         OSTNode<T> *search(T value);       //递归查找值
         OSTNode<T> *OS_select(int rank);   //查找第i小的值,即秩为i的节点
+        int OS_rank(OSTNode<T> *node);     //查找指定节点的秩
         OSTNode<T> *OS_remove(T value);    //删除某值的节点
 
 
@@ -80,6 +82,7 @@ class OSTree{
 
         OSTNode<T> *search(OSTNode<T> *node, T value) const;             //递归查找值为value的节点
         OSTNode<T> *OS_select(OSTNode<T> *node, int rank) const;         //查找第i小的值,即秩为i的节点
+        int OS_rank(OSTNode<T> *root, OSTNode<T> *node) const;           //查找指定节点的秩
 
         void OS_transplant(OSTNode<T>* &root, OSTNode<T> *u, OSTNode<T> *v) const;     //用v子树代替u子树
         void OS_remove(OSTNode<T>* &root, OSTNode<T>* z) const;                 //删除节点z
@@ -272,13 +275,13 @@ void OSTree<T>::OS_insertFixUp(OSTNode<T>* &root, OSTNode<T>* z) const
             // 情况2：叔为黑，z为右子
             else if(z == z->parent->right){
                 z = z->parent;
-                leftRotate(root, z);
+                OS_leftRotate(root, z);
             }
             // 情况3：叔为黑，z为左子
             else{
                 z->parent->parent->color = RED;
                 z->parent->color = BLACK;
-                rightRotate(root, z->parent->parent); 
+                OS_rightRotate(root, z->parent->parent); 
             }
         }
         // z.p是其父的右子
@@ -297,13 +300,13 @@ void OSTree<T>::OS_insertFixUp(OSTNode<T>* &root, OSTNode<T>* z) const
                 // 情况2：z为左子
                 if(z == z->parent->left){
                     z = z->parent;
-                    rightRotate(root, z);
+                    OS_rightRotate(root, z);
                 }
                 // 情况3：z为右子
                 else{
                     z->parent->parent->color = RED;
                     z->parent->color = BLACK;
-                    leftRotate(root,z->parent->parent);
+                    OS_leftRotate(root,z->parent->parent);
                 }
             }
         }
@@ -323,8 +326,10 @@ void OSTree<T>::OS_insert(OSTNode<T>* &root, OSTNode<T> *z) const
 {
     OSTNode<T> *y = NIL;
     OSTNode<T> *x = root;
+    
     while(x != NIL){
         y = x;
+        x->size = x->size + 1;
         if(z->key < x->key)
             x = x->left;
         //顺序统计🌲不再要求关键字各不相同
@@ -341,7 +346,7 @@ void OSTree<T>::OS_insert(OSTNode<T>* &root, OSTNode<T> *z) const
         y->right = z;
     
     
-    insertFixUp(root, z);
+    OS_insertFixUp(root, z);
 
 } 
 
@@ -353,10 +358,10 @@ void OSTree<T>::OS_insert(OSTNode<T>* &root, OSTNode<T> *z) const
 template <class T>
 OSTNode<T> *OSTree<T>::OS_insert(T key)
 {
-    OSTNode<T> *z = new OSTNode<T>(key, RED, NULL, NIL, NIL, 0);
+    OSTNode<T> *z = new OSTNode<T>(key, RED, NULL, NIL, NIL, 1);
     if(z == NULL)
         return NULL;
-    insert(root,z);
+    OS_insert(root,z);
     return z;
 }
 
@@ -443,6 +448,42 @@ void OSTree<T>::OS_transplant(OSTNode<T>* &root, OSTNode<T> *u, OSTNode<T> *v) c
 
     v->parent = u->parent;
 }
+
+/**
+ * @brief 查找指定节点的秩
+ */
+template <class T>
+int OSTree<T>::OS_rank(OSTNode<T> *root, OSTNode<T> *node) const
+{
+    int rank = 0;
+    while(root!= node){
+        if(root->key <= node->key){
+            rank += root->left->size + 1;
+            root = root->right;
+        }
+        else{
+            root = root->left;
+        }
+
+    }
+    rank += root->left->size + 1;
+    return rank;
+}        
+
+/**
+ * @brief 查找指定节点的秩
+ */
+template <class T>
+int OSTree<T>::OS_rank(OSTNode<T> *node)
+{
+    return OS_rank(root, node);
+}    
+
+
+
+
+
+
 /**
  * @brief 删除某值的节点
  */
@@ -638,3 +679,4 @@ void OSTree<T>::postOrder()
     postOrder(root);
     cout << endl;
 }
+

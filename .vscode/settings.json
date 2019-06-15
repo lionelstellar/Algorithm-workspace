@@ -19,6 +19,11 @@
         "system_error": "cpp",
         "tuple": "cpp",
         "__hash_table": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "hash_map": "cpp",
+        "initializer_list": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "utility": "cpp"
     }
 }
