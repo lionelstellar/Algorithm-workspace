@@ -36,6 +36,7 @@ void print_lcs(vector< vector<string> > b, string X, int i, int j)
     if(i == 0 or j == 0)
         return;
     if(b[i][j] == "↖"){
+         cout << "左上";
          cout << X[i];
          print_lcs(b, X, i-1, j-1);
     }  
@@ -69,6 +70,8 @@ int main()
 
     cout << "最大公共子序列为：";
     print_lcs(b, X, m, n);
+    if(X. == "B")
+        cout<< "B";
 
 
 
