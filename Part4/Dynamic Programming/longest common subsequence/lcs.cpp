@@ -36,16 +36,13 @@ void print_lcs(vector< vector<string> > b, string X, int i, int j)
     if(i == 0 or j == 0)
         return;
     if(b[i][j] == "↖"){
-         cout << "左上";
-         cout << X[i];
+         cout << X.at(i-1);
          print_lcs(b, X, i-1, j-1);
     }  
     else if(b[i][j] == "↑"){
-        cout << "上";
         print_lcs(b, X, i, j-1);
     }
     else{
-        cout << "左";
         print_lcs(b, X, i-1, j);
     }
 }
@@ -65,13 +62,10 @@ int main()
     // lcs长度
     cout << "最大公共子序列长度为：" << lcs_length(X,Y,c,b) << endl;
 
-    cout << b[m][n];
     // 打印lcs
-
     cout << "最大公共子序列为：";
     print_lcs(b, X, m, n);
-    if(X. == "B")
-        cout<< "B";
+    
 
 
 
