@@ -2,83 +2,37 @@
 #include<vector>
 using namespace std;
 
-int lcs_length(string X, string Y, vector< vector<int> > &c, vector< vector<string> > &b)
+void recursive_activity_selector(vector<int> s, vector<int> f, vector<int> &result)
 {
-    int m = X.length();
-    int n = Y.length();
-    for(int i = 0; i <= m; i++)
-        c[i][0] = 0;
-    for(int j = 0; j <= m; j++)
-        c[0][j] = 0;
 
-    // bottom-up求解
-    for(int i = 1; i <= m; i++)
-        for(int j = 1; j <= n; j++)
-        {
-            if(X[i] == Y[j]){
-                c[i][j] = c[i-1][j-1] + 1;
-                b[i][j] = "↖";
-            }
-            else if(c[i-1][j] > c[i][j-1]){
-                c[i][j] = c[i-1][j];
-                b[i][j] = "←";
-            }
-            else{
-                c[i][j] = c[i][j-1];
-                b[i][j] = "↑";
-            }
-        }
-    return c[m][n];
-}
-
-void print_lcs(vector< vector<string> > b, string X, int i, int j)
-{
-    if(i == 0 or j == 0)
-        return;
-    if(b[i][j] == "↖"){
-         cout << X[i];
-         print_lcs(b, X, i-1, j-1);
-    }  
-    else if(b[i][j] == "↑"){
-        cout << "上";
-        print_lcs(b, X, i, j-1);
+    int i = result.back() + 1;
+    
+    while( i <= s.size() - 1 && s[i] < f[result.back()]){
+        i++;
     }
-    else{
-        cout << "左";
-        print_lcs(b, X, i-1, j);
-    }
+    if(i <= s.size() - 1){
+        result.push_back(i);
+        recursive_activity_selector(s, f, result);
+    }    
 }
 
 int main()
 {
-    string X = "ABCBDAB";
-    string Y = "BDCABA";
-    int m = X.length();
-    int n = Y.length();
-    // m+1行n+1列的表记录最大长度
-    vector< vector<int> > c(m+1, vector<int>(n+1));
-    // m+1行n+1列的表记录箭头
-    vector< vector<string> > b(m+1, vector<string>(n+1));
-    
+    // 添加活动a0, 起始终止时刻均为0.
+    // 开始时间
+    int start[] = {0, 1, 3, 0, 5, 3, 5, 6, 8, 8, 2, 12};
+    // 结束时间(sorted)
+    int finish[] = {0, 4, 5, 6, 7, 9, 9, 10, 11, 12, 14, 16};
+    vector<int> s(start, start + sizeof(start)/sizeof(int));
+    vector<int> f(finish, finish + sizeof(finish)/sizeof(int));
 
-    // lcs长度
-    cout << "最大公共子序列长度为：" << lcs_length(X,Y,c,b) << endl;
-
-    cout << b[m][n];
-    // 打印lcs
-
-    cout << "最大公共子序列为：";
-    print_lcs(b, X, m, n);
-
-
-
-
-
-
-
-
-
-
+    // 选择结果
+    vector<int> result(1, 0);
+    recursive_activity_selector(s, f, result);
+    cout << "选择活动数：" << result.size() - 1 << endl;
+    cout << "选择活动编号：";
+    copy (result.begin() + 1, result.end(), ostream_iterator<int> (cout, " "));
+    cout << endl;
 
 
     
