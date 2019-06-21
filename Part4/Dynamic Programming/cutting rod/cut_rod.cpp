@@ -94,7 +94,7 @@ int bottom_up_cut_rod(int n)
 int main()
 {
     //enumeration programming
-    cout << "自顶向下法切长度为10：" << cut_rod(10) << endl;
+    cout << "自顶向下法切长度为10：" << cut_rod(11) << endl;
 
     //dynamic programming
     cout << "带备忘录自顶向下法切长度为8：" << memorized_cut_rod(8) << endl;
