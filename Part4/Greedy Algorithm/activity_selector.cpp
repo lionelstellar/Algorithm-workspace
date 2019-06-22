@@ -66,7 +66,7 @@ int main()
     greedy_activity_selector(s, f, result2);
 
 
-
+    // 显示结果
     cout << "递归选择活动数：" << result1.size() << endl;
     cout << "递归选择活动编号：";
     copy (result1.begin(), result1.end(), ostream_iterator<int> (cout, " "));
