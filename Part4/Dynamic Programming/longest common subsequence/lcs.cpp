@@ -1,7 +1,14 @@
 #include<iostream>
 #include<vector>
 using namespace std;
-
+/**
+ * @brief 求解X,Y的最长公共子序列
+ * @param X,Y   待比较的序列
+ * @param m     m[i,j] is the optimization of matrix multiply of Ai to Aj
+ * @param s     s[i,j] is the break point of matrix chain Ai...j in the optimization
+ * equation:    m[i,j] = min(m[i,k] + m[k+1,j] + Ai-1AkAj) (i<k<j)
+ *              m[i,i] = 0
+ */
 int lcs_length(string X, string Y, vector< vector<int> > &c, vector< vector<string> > &b)
 {
     int m = X.length();
