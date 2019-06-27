@@ -15,7 +15,7 @@ class HuffmanTreeNode{
 
 int main()
 {
-    //map<char, int> dict;
+    
     char ch[] = {'a', 'b', 'c', 'd', 'e', 'f'};
     int freq[] = {45, 13, 12, 16, 9, 5};
     
