@@ -13,7 +13,6 @@ void InsertionSort(vector<T> &v)
 
     //从第二个元素开始遍历数组
 	for(i = 1; i < v.size(); i++){
-
 		//取要插入的元素key
 		key = v[i];
 
